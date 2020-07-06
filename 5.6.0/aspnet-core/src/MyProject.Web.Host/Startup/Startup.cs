@@ -43,7 +43,9 @@ namespace MyProject.Web.Host.Startup
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<MyProjectDbContext>(options=>options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
+            //services.AddDbContext<MyProjectDbContext>(options=>options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
+            services.AddDbContext<MyProjectDbContext>(options => options.UseNpgsql(Configuration["ConnectionStrings:Default"]));
+
             services.AddTransient<IProblemRepository, EFProblemRepository>();
             services.AddMvc();
             //MVC

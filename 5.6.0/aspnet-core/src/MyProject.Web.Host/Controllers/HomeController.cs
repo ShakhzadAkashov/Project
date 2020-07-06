@@ -18,7 +18,7 @@ namespace MyProject.Web.Host.Controllers
         public HomeController(INotificationPublisher notificationPublisher, IProblemRepository repo)
         {
             _notificationPublisher = notificationPublisher;
-            repository = repo;
+            repository = repo;  
         }
 
         public ViewResult Index() => View();
