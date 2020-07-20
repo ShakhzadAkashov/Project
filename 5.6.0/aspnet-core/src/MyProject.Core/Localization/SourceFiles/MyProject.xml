@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <localizationDictionary culture="en">
   <texts>
-    <text name="HelpDesks" value="HelpDesks" />
     <text name="HomePage" value="Home page" />
     <text name="About" value="About" />
+	<text name="HelpDesks" value="HelpDesks" />
     <text name="WelcomeMessage" value="Welcome to MyProject!" />
     <text name="FormIsNotValidMessage" value="Form is not valid. Please check and fix errors." />
     <text name="TenantNameCanNotBeEmpty" value="Tenant name can not be empty" />

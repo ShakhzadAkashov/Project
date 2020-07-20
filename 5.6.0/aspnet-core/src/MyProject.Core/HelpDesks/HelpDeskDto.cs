@@ -4,6 +4,7 @@ using Abp.AutoMapper;
 namespace MyProject.HelpDesks
 {
     [AutoMapFrom(typeof(HelpDesk))]
+    [AutoMapTo(typeof(HelpDesk))]
     public class HelpDeskDto : EntityDto<int>
     {
         public string Name { get; set; }

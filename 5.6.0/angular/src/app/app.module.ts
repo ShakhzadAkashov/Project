@@ -41,6 +41,7 @@ import { SidebarMenuComponent } from './layout/sidebar-menu.component';
 import { HelpDesksComponent } from './helpdesks/helpdesks.component';
 import { CreateHelpDeskDialogComponent } from './helpdesks/create-helpdesk/create-helpdesk-dialog.component';
 import { EditHelpDeskDialogComponent } from './helpdesks/edit-helpdesk/edit-helpdesk-dialog.component';
+import { MatDialogContent, MatDialogModule, MatFormField, MatIconModule, MatMenuModule, MatFormFieldModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -90,6 +91,10 @@ import { EditHelpDeskDialogComponent } from './helpdesks/edit-helpdesk/edit-help
     ServiceProxyModule,
     SharedModule,
     NgxPaginationModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatMenuModule,
   ],
   providers: [],
   entryComponents: [
