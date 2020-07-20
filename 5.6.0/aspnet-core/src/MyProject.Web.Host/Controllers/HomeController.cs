@@ -21,19 +21,19 @@ namespace MyProject.Web.Host.Controllers
             repository = repo;  
         }
 
-        public ViewResult Index() => View();
-        public ViewResult Create() => View();
-        [HttpPost]
-        public IActionResult Create(Problem problem)
-        {
-            repository.SaveProblem(problem);
-            return RedirectToAction("Index");
-        }
-
-        //public IActionResult Index()
+        //public ViewResult Index() => View();
+        //public ViewResult Create() => View();
+        //[HttpPost]
+        //public IActionResult Create(Problem problem)
         //{
-        //    return Redirect("/swagger");
+        //    repository.SaveProblem(problem);
+        //    return RedirectToAction("Index");
         //}
+
+        public IActionResult Index()
+        {
+            return Redirect("/swagger");
+        }
 
         /// <summary>
         /// This is a demo code to demonstrate sending notification to default tenant admin and host admin uers.

@@ -4,13 +4,14 @@ using MyProject.Authorization.Roles;
 using MyProject.Authorization.Users;
 using MyProject.MultiTenancy;
 using MyProject.Problems;
+using MyProject.HelpDesks;
 
 namespace MyProject.EntityFrameworkCore
 {
     public class MyProjectDbContext : AbpZeroDbContext<Tenant, Role, User, MyProjectDbContext>
     {
         public DbSet<Problem> problems { get; set; }
-        
+        public DbSet<HelpDesk> HelpDesks { get; set; }
         public MyProjectDbContext(DbContextOptions<MyProjectDbContext> options)
             : base(options)
         {

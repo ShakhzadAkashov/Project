@@ -38,6 +38,9 @@ import { SidebarComponent } from './layout/sidebar.component';
 import { SidebarLogoComponent } from './layout/sidebar-logo.component';
 import { SidebarUserPanelComponent } from './layout/sidebar-user-panel.component';
 import { SidebarMenuComponent } from './layout/sidebar-menu.component';
+import { HelpDesksComponent } from './helpdesks/helpdesks.component';
+import { CreateHelpDeskDialogComponent } from './helpdesks/create-helpdesk/create-helpdesk-dialog.component';
+import { EditHelpDeskDialogComponent } from './helpdesks/edit-helpdesk/edit-helpdesk-dialog.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +70,11 @@ import { SidebarMenuComponent } from './layout/sidebar-menu.component';
     SidebarComponent,
     SidebarLogoComponent,
     SidebarUserPanelComponent,
-    SidebarMenuComponent
+    SidebarMenuComponent,
+    // HelpDesk
+    HelpDesksComponent,
+    CreateHelpDeskDialogComponent,
+    EditHelpDeskDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -96,6 +103,9 @@ import { SidebarMenuComponent } from './layout/sidebar-menu.component';
     CreateUserDialogComponent,
     EditUserDialogComponent,
     ResetPasswordDialogComponent,
+    //helpdesk
+    CreateHelpDeskDialogComponent,
+    EditHelpDeskDialogComponent,
   ],
 })
 export class AppModule {}

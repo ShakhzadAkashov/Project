@@ -20,14 +20,22 @@ namespace MyProject.Roles
     [AbpAuthorize(PermissionNames.Pages_Roles)]
     public class RoleAppService : AsyncCrudAppService<Role, RoleDto, int, PagedRoleResultRequestDto, CreateRoleDto, RoleDto>, IRoleAppService
     {
+        private readonly IRepository<Role> _repository;
         private readonly RoleManager _roleManager;
         private readonly UserManager _userManager;
 
         public RoleAppService(IRepository<Role> repository, RoleManager roleManager, UserManager userManager)
             : base(repository)
         {
+            _repository = repository;
             _roleManager = roleManager;
             _userManager = userManager;
+        }
+
+        public async Task DoIt()
+        {
+            var role = _repository.GetAll().First();
+            await _repository.DeleteAsync(role);
         }
 
         public override async Task<RoleDto> CreateAsync(CreateRoleDto input)
