@@ -215,10 +215,60 @@ export class HelpDesksServiceProxy {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
+
+    getAllPermissions(): Observable<PermissionDtoListResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/HelpDesk/GetAllPermissions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllPermissions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllPermissions(<any>response_);
+                } catch (e) {
+                    return <Observable<PermissionDtoListResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PermissionDtoListResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllPermissions(response: HttpResponseBase): Observable<PermissionDtoListResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PermissionDtoListResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PermissionDtoListResultDto>(<any>null);
+    }
+
     /**
      * @param id (optional) 
      * @return Success
      */
+    
     get(id: number | undefined): Observable<HelpDeskDto> {
         let url_ = this.baseUrl + "/api/services/app/HelpDesks/Get?";
         if (id === null)
@@ -2418,6 +2468,53 @@ export interface IHelpDeskDtoPagedResultDto {
     items: HelpDeskDto[] | undefined;
 }
 
+export class CreateHelpDeskDto implements ICreateHelpDeskDto
+{
+    name: string;
+    surName: string;
+    email: string;
+    description: string;
+    id: number;
+    constructor(data?: ICreateHelpDeskDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.surName = _data["surName"];
+            this.email = _data["email"];
+            this.description = _data["description"];
+            this.id = _data["id"];
+        }
+    }
+    static fromJS(data: any): CreateHelpDeskDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateHelpDeskDto();
+        result.init(data);
+        return result;
+    }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["surName"] = this.surName;
+        data["email"] = this.email;
+        data["description"] = this.description;
+        data["id"] = this.id;
+        return data; 
+    }
+    clone(): CreateHelpDeskDto {
+        const json = this.toJSON();
+        let result = new CreateHelpDeskDto();
+        result.init(json);
+        return result;
+    }
+}
+
 export class CreateRoleDto implements ICreateRoleDto {
     name: string;
     displayName: string;
@@ -3734,6 +3831,14 @@ export interface ICreateUserDto {
     roleNames: string[] | undefined;
     password: string;
 }
+
+export interface ICreateHelpDeskDto {
+    name: string;
+    surName:string;
+    email:string;
+    description:string;
+}
+
 
 export class UserDto implements IUserDto {
     userName: string;

@@ -1,9 +1,10 @@
 import { Component, Injector } from '@angular/core';
-import { MatDialog } from '@angular/material';
+// import { MatDialog } from '@angular/material';
 import { finalize } from 'rxjs/operators';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import {
-    PagedListingComponentBase, PagedRequestDto,
+    PagedListingComponentBase, PagedRequestDto, PagedResultDto,
 } from 'shared/paged-listing-component-base';
 import {
     HelpDesksServiceProxy,
@@ -13,38 +14,46 @@ import {
 import { CreateHelpDeskDialogComponent } from './create-helpdesk/create-helpdesk-dialog.component';
 import { EditHelpDeskDialogComponent } from './edit-helpdesk/edit-helpdesk-dialog.component';
 
+class PagedHelpDeskRequestDto extends PagedRequestDto
+{
+    keyword:string;
+}
+
 @Component({
     templateUrl: './helpdesks.component.html',
     animations: [appModuleAnimation()],
-    styles: [
-        `
-          mat-form-field {
-            padding: 10px;
-          }
-        `
-      ]
+    // styles: [
+    //     `
+    //       mat-form-field {
+    //         padding: 10px;
+    //       }
+    //     `
+    //   ]
 })
 export class HelpDesksComponent extends PagedListingComponentBase<HelpDeskDto> {
     helpdesks: HelpDeskDto[] = [];
     keyword = '';
-    isActive: boolean | null;
+    // isActive: boolean | null;
 
     constructor(
         injector: Injector,
         private _helpdeskService: HelpDesksServiceProxy,
-        private _dialog: MatDialog
+        // private _dialog: MatDialog
+        private _modalService : BsModalService
     ) {
         super(injector);
     }
 
     list(
-        request: PagedRequestDto,
+        // request: PagedRequestDto,
+        request: PagedHelpDeskRequestDto,
         pageNumber: number,
         finishedCallback: Function
     ): void {
-
+        request.keyword = this.keyword;
         this._helpdeskService
-            .getAll('', request.skipCount, request.maxResultCount)
+            // .getAll('', request.skipCount, request.maxResultCount)
+            .getAll(request.keyword, request.skipCount, request.maxResultCount)
             .pipe(
                 finalize(() => {
                     finishedCallback();
@@ -85,19 +94,38 @@ export class HelpDesksComponent extends PagedListingComponentBase<HelpDeskDto> {
     }
 
     showCreateOrEditHelpDeskDialog(id?: number): void {
-        let createOrEditHelpDeskDialog;
-        if (id === undefined || id <= 0) {
-            createOrEditHelpDeskDialog = this._dialog.open(CreateHelpDeskDialogComponent);
+        // let createOrEditHelpDeskDialog;
+        let createOrEditHelpDeskDialog : BsModalRef;
+        // if (id === undefined || id <= 0) 
+        if(!id)
+        {
+            // createOrEditHelpDeskDialog = this._dialog.open(CreateHelpDeskDialogComponent);
+            createOrEditHelpDeskDialog = this._modalService.show(CreateHelpDeskDialogComponent,
+                { 
+                    class: 'modal-lg',
+                });
         } else {
-            createOrEditHelpDeskDialog = this._dialog.open(EditHelpDeskDialogComponent, {
-                data: id
-            });
+            // createOrEditHelpDeskDialog = this._dialog.open(EditHelpDeskDialogComponent, {
+            //     data: id
+            // });
+            createOrEditHelpDeskDialog = this._modalService.show(EditHelpDeskDialogComponent,
+                {
+                    class: 'modal-lg',
+                    initialState:
+                    {
+                        id:id,
+                    },
+                });
         }
 
-        createOrEditHelpDeskDialog.afterClosed().subscribe(result => {
-            if (result) {
-                this.refresh();
-            }
+        // createOrEditHelpDeskDialog.afterClosed().subscribe(result => {
+        //     if (result) {
+        //         this.refresh();
+        //     }
+        // });
+        createOrEditHelpDeskDialog.content.onSave.subscribe(()=>
+        {
+            this.refresh();
         });
     }
 }
