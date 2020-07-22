@@ -21,7 +21,7 @@ class PagedHelpDeskRequestDto extends PagedRequestDto
 
 @Component({
     templateUrl: './helpdesks.component.html',
-    animations: [appModuleAnimation()],
+    animations: [appModuleAnimation()]
     // styles: [
     //     `
     //       mat-form-field {
