@@ -47,7 +47,7 @@
               required
               minlength="2"
               maxlength="32"
-              [(ngModel)]="role.name"
+              [(ngModel)]="helpdesk.name"
               #nameModel="ngModel"
               #nameEl
             />
@@ -70,7 +70,7 @@
               required
               minlength="2"
               maxlength="32"
-              [(ngModel)]="role.email"
+              [(ngModel)]="helpdesk.email"
               #emailModel="ngModel"
               #emailEl
             />
@@ -93,7 +93,7 @@
               required
               minlength="2"
               maxlength="32"
-              [(ngModel)]="role.surName"
+              [(ngModel)]="helpdesk.surName"
               #surNameModel="ngModel"
               #surNameEl
             />
@@ -113,7 +113,7 @@
               class="form-control"
               name="description"
               id="description"
-              [(ngModel)]="role.description"
+              [(ngModel)]="helpdesk.description"
             >
             </textarea>
           </div>

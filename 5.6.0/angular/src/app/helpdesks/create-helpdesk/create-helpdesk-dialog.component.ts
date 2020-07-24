@@ -83,7 +83,7 @@ import {
 export class CreateHelpDeskDialogComponent extends AppComponentBase
   implements OnInit {
   saving = false;
-  role = new HelpDeskDto();
+  helpdesk = new HelpDeskDto();
   permissions: PermissionDto[] = [];
   checkedPermissionsMap: { [key: string]: boolean } = {};
   defaultPermissionCheckedStatus = true;
@@ -92,19 +92,19 @@ export class CreateHelpDeskDialogComponent extends AppComponentBase
 
   constructor(
     injector: Injector,
-    private _roleService: HelpDesksServiceProxy,
+    private _helpdeskService: HelpDesksServiceProxy,
     public bsModalRef: BsModalRef
   ) {
     super(injector);
   }
 
   ngOnInit(): void {
-    this._roleService
-      .getAllPermissions()
-      .subscribe((result: PermissionDtoListResultDto) => {
-        this.permissions = result.items;
-        this.setInitialPermissionsStatus();
-      });
+    // this._helpdeskService
+    //   .getAllPermissions()
+    //   .subscribe((result: PermissionDtoListResultDto) => {
+    //     this.permissions = result.items;
+    //     this.setInitialPermissionsStatus();
+    //   });
   }
 
   setInitialPermissionsStatus(): void {
@@ -138,11 +138,11 @@ export class CreateHelpDeskDialogComponent extends AppComponentBase
   save(): void {
     this.saving = true;
 
-    const role = new CreateHelpDeskDto();
-    role.init(this.role);
+    const helpdesk = new CreateHelpDeskDto();
+    helpdesk.init(this.helpdesk);
 
-    this._roleService
-      .create(role)
+    this._helpdeskService
+      .create(helpdesk)
       .pipe(
         finalize(() => {
           this.saving = false;

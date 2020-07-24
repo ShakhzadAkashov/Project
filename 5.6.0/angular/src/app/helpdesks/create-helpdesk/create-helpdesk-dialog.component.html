@@ -47,7 +47,7 @@
               required
               minlength="2"
               maxlength="32"
-              [(ngModel)]="role.name"
+              [(ngModel)]="helpdesk.name"
               #nameModel="ngModel"
               #nameEl
             />
@@ -65,18 +65,18 @@
             <input
               type="text"
               class="form-control"
-              name="surName"
-              id="displayName"
+              name="email"
+              id="email"
               required
               minlength="2"
               maxlength="32"
-              [(ngModel)]="role.email"
-              #displayNameModel="ngModel"
-              #displayNameEl
+              [(ngModel)]="helpdesk.email"
+              #emailModel="ngModel"
+              #emailEl
             />
             <abp-validation-summary
-              [control]="nameModel"
-              [controlEl]="nameEl"
+              [control]="emailModel"
+              [controlEl]="emailEl"
             ></abp-validation-summary>
           </div>
         </div>
@@ -89,17 +89,17 @@
               type="text"
               class="form-control"
               name="surName"
-              id="displayName"
+              id="surName"
               required
               minlength="2"
               maxlength="32"
-              [(ngModel)]="role.surName"
-              #displayNameModel="ngModel"
-              #displayNameEl
+              [(ngModel)]="helpdesk.surName"
+              #surNameModel="ngModel"
+              #surNameEl
             />
             <abp-validation-summary
-              [control]="nameModel"
-              [controlEl]="nameEl"
+              [control]="surNameModel"
+              [controlEl]="surNameEl"
             ></abp-validation-summary>
           </div>
         </div>
@@ -113,7 +113,7 @@
               class="form-control"
               name="description"
               id="description"
-              [(ngModel)]="role.description"
+              [(ngModel)]="helpdesk.description"
             >
             </textarea>
           </div>

@@ -77,7 +77,7 @@ import {
   HelpDesksServiceProxy,
   GetHelpDeskForEditOutput,
   HelpDeskDto,
-  HelpDeskPermissionDto,
+  // HelpDeskPermissionDto,
   HelpDeskEditDto,
   FlatPermissionDto
 } from '@shared/service-proxies/service-proxies';
@@ -89,7 +89,7 @@ export class EditHelpDeskDialogComponent extends AppComponentBase
   implements OnInit {
   saving = false;
   id: number;
-  role = new HelpDeskEditDto();
+  helpdesk = new HelpDeskEditDto();
   permissions: FlatPermissionDto[];
   grantedPermissionNames: string[];
   checkedPermissionsMap: { [key: string]: boolean } = {};
@@ -98,19 +98,19 @@ export class EditHelpDeskDialogComponent extends AppComponentBase
 
   constructor(
     injector: Injector,
-    private _roleService: HelpDesksServiceProxy,
+    private _helpdeskService: HelpDesksServiceProxy,
     public bsModalRef: BsModalRef
   ) {
     super(injector);
   }
 
   ngOnInit(): void {
-    this._roleService
+    this._helpdeskService
       .getHelpDeskForEdit(this.id)
       .subscribe((result: GetHelpDeskForEditOutput) => {
-        this.role = result.helpdesk;
-        this.permissions = result.permissions;
-        this.grantedPermissionNames = result.grantedPermissionNames;
+        this.helpdesk = result.helpDesk;
+        // this.permissions = result.permissions;
+        // this.grantedPermissionNames = result.grantedPermissionNames;
         this.setInitialPermissionsStatus();
       });
   }
@@ -127,9 +127,9 @@ export class EditHelpDeskDialogComponent extends AppComponentBase
     return _.includes(this.grantedPermissionNames, permissionName);
   }
 
-  onPermissionChange(permission: HelpDeskPermissionDto, $event) {
-    this.checkedPermissionsMap[permission.name] = $event.target.checked;
-  }
+  // onPermissionChange(permission: HelpDeskPermissionDto, $event) {
+  //   this.checkedPermissionsMap[permission.name] = $event.target.checked;
+  // }
 
   getCheckedPermissions(): string[] {
     const permissions: string[] = [];
@@ -145,10 +145,10 @@ export class EditHelpDeskDialogComponent extends AppComponentBase
     this.saving = true;
 
     const role = new HelpDeskDto();
-    role.init(this.role);
-    role.grantedPermissions = this.getCheckedPermissions();
+    role.init(this.helpdesk);
+    // role.grantedPermissions = this.getCheckedPermissions();
 
-    this._roleService
+    this._helpdeskService
       .update(role)
       .pipe(
         finalize(() => {

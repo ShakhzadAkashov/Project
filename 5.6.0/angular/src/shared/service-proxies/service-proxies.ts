@@ -215,9 +215,12 @@ export class HelpDesksServiceProxy {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
     getHelpDeskForEdit(id: number | undefined): Observable<GetHelpDeskForEditOutput> {
-        let url_ = this.baseUrl + "/api/services/app/HelpDesk/HelpDeskForEdit?";
+        let url_ = this.baseUrl + "/api/services/app/HelpDesks/GetHelpDeskForEdit?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
@@ -268,59 +271,10 @@ export class HelpDesksServiceProxy {
         return _observableOf<GetHelpDeskForEditOutput>(<any>null);
     }
 
-    getAllPermissions(): Observable<PermissionDtoListResultDto> {
-        let url_ = this.baseUrl + "/api/services/app/HelpDesk/GetAllPermissions";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetAllPermissions(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetAllPermissions(<any>response_);
-                } catch (e) {
-                    return <Observable<PermissionDtoListResultDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<PermissionDtoListResultDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetAllPermissions(response: HttpResponseBase): Observable<PermissionDtoListResultDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PermissionDtoListResultDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<PermissionDtoListResultDto>(<any>null);
-    }
-
     /**
      * @param id (optional) 
      * @return Success
      */
-    
     get(id: number | undefined): Observable<HelpDeskDto> {
         let url_ = this.baseUrl + "/api/services/app/HelpDesks/Get?";
         if (id === null)
@@ -441,7 +395,7 @@ export class HelpDesksServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    create(body: HelpDeskDto | undefined): Observable<HelpDeskDto> {
+    create(body: CreateHelpDeskDto | undefined): Observable<HelpDeskDto> {
         let url_ = this.baseUrl + "/api/services/app/HelpDesks/Create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2406,12 +2360,113 @@ export interface IChangeUiThemeInput {
     theme: string;
 }
 
+export class HelpDeskEditDto implements IHelpDeskEditDto {
+    name: string | undefined;
+    surName: string | undefined;
+    email: string | undefined;
+    description: string | undefined;
+    id: number;
+
+    constructor(data?: IHelpDeskEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.surName = _data["surName"];
+            this.email = _data["email"];
+            this.description = _data["description"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): HelpDeskEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new HelpDeskEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["surName"] = this.surName;
+        data["email"] = this.email;
+        data["description"] = this.description;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): HelpDeskEditDto {
+        const json = this.toJSON();
+        let result = new HelpDeskEditDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IHelpDeskEditDto {
+    name: string | undefined;
+    surName: string | undefined;
+    email: string | undefined;
+    description: string | undefined;
+    id: number;
+}
+
+export class GetHelpDeskForEditOutput implements IGetHelpDeskForEditOutput {
+    helpDesk: HelpDeskEditDto;
+
+    constructor(data?: IGetHelpDeskForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.helpDesk = _data["helpDesk"] ? HelpDeskEditDto.fromJS(_data["helpDesk"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetHelpDeskForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetHelpDeskForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["helpDesk"] = this.helpDesk ? this.helpDesk.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): GetHelpDeskForEditOutput {
+        const json = this.toJSON();
+        let result = new GetHelpDeskForEditOutput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IGetHelpDeskForEditOutput {
+    helpDesk: HelpDeskEditDto;
+}
+
 export class HelpDeskDto implements IHelpDeskDto {
     name: string | undefined;
     surName: string | undefined;
     email: string | undefined;
     description: string | undefined;
-    grantedPermissions: string[] | undefined;
     id: number;
 
     constructor(data?: IHelpDeskDto) {
@@ -2429,11 +2484,6 @@ export class HelpDeskDto implements IHelpDeskDto {
             this.surName = _data["surName"];
             this.email = _data["email"];
             this.description = _data["description"];
-            if (Array.isArray(_data["grantedPermissions"])) {
-                this.grantedPermissions = [] as any;
-                for (let item of _data["grantedPermissions"])
-                    this.grantedPermissions.push(item);
-            }
             this.id = _data["id"];
         }
     }
@@ -2451,11 +2501,6 @@ export class HelpDeskDto implements IHelpDeskDto {
         data["surName"] = this.surName;
         data["email"] = this.email;
         data["description"] = this.description;
-        if (Array.isArray(this.grantedPermissions)) {
-            data["grantedPermissions"] = [];
-            for (let item of this.grantedPermissions)
-                data["grantedPermissions"].push(item);
-        }
         data["id"] = this.id;
         return data; 
     }
@@ -2473,7 +2518,6 @@ export interface IHelpDeskDto {
     surName: string | undefined;
     email: string | undefined;
     description: string | undefined;
-    grantedPermissions: string[] | undefined;
     id: number;
 }
 
@@ -2532,14 +2576,12 @@ export interface IHelpDeskDtoPagedResultDto {
     items: HelpDeskDto[] | undefined;
 }
 
-export class CreateHelpDeskDto implements ICreateHelpDeskDto
-{
-    name: string;
-    surName: string;
-    email: string;
-    description: string;
-    grantedPermissions: string[] | undefined;
-    id: number;
+export class CreateHelpDeskDto implements ICreateHelpDeskDto {
+    name: string | undefined;
+    surName: string | undefined;
+    email: string | undefined;
+    description: string | undefined;
+
     constructor(data?: ICreateHelpDeskDto) {
         if (data) {
             for (var property in data) {
@@ -2548,46 +2590,45 @@ export class CreateHelpDeskDto implements ICreateHelpDeskDto
             }
         }
     }
+
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
             this.surName = _data["surName"];
             this.email = _data["email"];
             this.description = _data["description"];
-            if (Array.isArray(_data["grantedPermissions"])) {
-                this.grantedPermissions = [] as any;
-                for (let item of _data["grantedPermissions"])
-                    this.grantedPermissions.push(item);
-            }
-            this.id = _data["id"];
         }
     }
+
     static fromJS(data: any): CreateHelpDeskDto {
         data = typeof data === 'object' ? data : {};
         let result = new CreateHelpDeskDto();
         result.init(data);
         return result;
     }
+
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
         data["surName"] = this.surName;
         data["email"] = this.email;
         data["description"] = this.description;
-        if (Array.isArray(this.grantedPermissions)) {
-            data["grantedPermissions"] = [];
-            for (let item of this.grantedPermissions)
-                data["grantedPermissions"].push(item);
-        }
-        data["id"] = this.id;
         return data; 
     }
+
     clone(): CreateHelpDeskDto {
         const json = this.toJSON();
         let result = new CreateHelpDeskDto();
         result.init(json);
         return result;
     }
+}
+
+export interface ICreateHelpDeskDto {
+    name: string | undefined;
+    surName: string | undefined;
+    email: string | undefined;
+    description: string | undefined;
 }
 
 export class CreateRoleDto implements ICreateRoleDto {
@@ -2890,69 +2931,11 @@ export class PermissionDto implements IPermissionDto {
     }
 }
 
-
 export interface IPermissionDto {
     name: string | undefined;
     displayName: string | undefined;
     description: string | undefined;
     id: number;
-}
-
-export interface IHelpDeskPermissionDto{
-    name: string | undefined;
-    description: string | undefined;
-    id: number;
-    email:string| undefined;
-    surName:string| undefined;
-}
-
-export class HelpDeskPermissionDto implements IHelpDeskPermissionDto{
-    name: string | undefined;
-    description: string | undefined;
-    id: number;
-    email:string| undefined;
-    surName:string| undefined;
-
-    constructor(data?: IHelpDeskPermissionDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.email = _data["email"];
-            this.description = _data["description"];
-            this.surName = _data["surName"];
-            this.id = _data["id"];
-        }
-    }
-    static fromJS(data: any): HelpDeskPermissionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new HelpDeskPermissionDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["surName"] = this.surName;
-        data["description"] = this.description;
-        data["email"] = this.email;
-        data["id"] = this.id;
-        return data; 
-    }
-    clone(): HelpDeskPermissionDto {
-        const json = this.toJSON();
-        let result = new HelpDeskPermissionDto();
-        result.init(json);
-        return result;
-    }
 }
 
 export class PermissionDtoListResultDto implements IPermissionDtoListResultDto {
@@ -3057,127 +3040,12 @@ export class RoleEditDto implements IRoleEditDto {
     }
 }
 
-
-
 export interface IRoleEditDto {
     name: string;
     displayName: string;
     description: string | undefined;
     isStatic: boolean;
     id: number;
-}
-
-export interface IHelpDeskEditDto{
-    name: string;
-    surName: string;
-    email: string;
-    description: string;
-    id: number;
-}
-
-export class HelpDeskEditDto implements IHelpDeskEditDto{
-    name: string;
-    surName: string;
-    email: string;
-    description: string;
-    id: number;
-
-    constructor(data?: IHelpDeskEditDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.surName = _data["surName"];
-            this.description = _data["description"];
-            this.email = _data["email"];
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): HelpDeskEditDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new HelpDeskEditDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["surName"] = this.surName;
-        data["description"] = this.description;
-        data["email"] = this.email;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): HelpDeskEditDto {
-        const json = this.toJSON();
-        let result = new HelpDeskEditDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IHelpDeskFlatPermissionDto{
-    name: string | undefined;
-    description: string | undefined;
-    surName:string|undefined;
-    email:string|undefined;
-}
-
-export class HelpDeskFlatPermissionDto implements IHelpDeskFlatPermissionDto{
-    name: string | undefined;
-    description: string | undefined;
-    surName:string|undefined;
-    email:string|undefined;
-
-    constructor(data?: IHelpDeskFlatPermissionDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.surName = _data["surName"];
-            this.description = _data["description"];
-            this.email = _data["email"];
-        }
-    }
-    
-    static fromJS(data: any): HelpDeskFlatPermissionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new HelpDeskFlatPermissionDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["surName"] = this.surName;
-        data["description"] = this.description;
-        data["email"] = this.email;
-        return data; 
-    }
-    clone(): HelpDeskFlatPermissionDto {
-        const json = this.toJSON();
-        let result = new HelpDeskFlatPermissionDto();
-        result.init(json);
-        return result;
-    }
 }
 
 export class FlatPermissionDto implements IFlatPermissionDto {
@@ -3296,74 +3164,6 @@ export interface IGetRoleForEditOutput {
     role: RoleEditDto;
     permissions: FlatPermissionDto[] | undefined;
     grantedPermissionNames: string[] | undefined;
-}
-
-export interface IGetHelpDeskForEditOutput{
-    helpdesk:HelpDeskEditDto;
-    permissions: FlatPermissionDto[] | undefined;
-    grantedPermissionNames: string[] | undefined;
-}
-
-export class GetHelpDeskForEditOutput implements IGetHelpDeskForEditOutput{
-    helpdesk:HelpDeskEditDto;
-    permissions: FlatPermissionDto[] | undefined;
-    grantedPermissionNames: string[] | undefined;
-
-    constructor(data?: IGetHelpDeskForEditOutput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.helpdesk = _data["helpdesk"] ? HelpDeskEditDto.fromJS(_data["helpdesk"]) : <any>undefined;
-            if (Array.isArray(_data["permissions"])) {
-                this.permissions = [] as any;
-                for (let item of _data["permissions"])
-                    this.permissions.push(FlatPermissionDto.fromJS(item));
-            }
-            if (Array.isArray(_data["grantedPermissionNames"])) {
-                this.grantedPermissionNames = [] as any;
-                for (let item of _data["grantedPermissionNames"])
-                    this.grantedPermissionNames.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): GetHelpDeskForEditOutput {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetHelpDeskForEditOutput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["helpdesk"] = this.helpdesk ? this.helpdesk.toJSON() : <any>undefined;
-        if (Array.isArray(this.permissions)) {
-            data["permissions"] = [];
-            for (let item of this.permissions)
-                data["permissions"].push(item.toJSON());
-        }
-        if (Array.isArray(this.grantedPermissionNames)) {
-            data["grantedPermissionNames"] = [];
-            for (let item of this.grantedPermissionNames)
-                data["grantedPermissionNames"].push(item);
-        }
-        return data; 
-    }
-
-    clone(): GetHelpDeskForEditOutput {
-        const json = this.toJSON();
-        let result = new GetHelpDeskForEditOutput();
-        result.init(json);
-        return result;
-    }
-
 }
 
 export class RoleDtoPagedResultDto implements IRoleDtoPagedResultDto {
@@ -4147,15 +3947,6 @@ export interface ICreateUserDto {
     roleNames: string[] | undefined;
     password: string;
 }
-
-export interface ICreateHelpDeskDto {
-    name: string;
-    surName:string;
-    email:string;
-    description:string;
-    grantedPermissions: string[] | undefined;
-}
-
 
 export class UserDto implements IUserDto {
     userName: string;
